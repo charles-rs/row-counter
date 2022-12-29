@@ -7,25 +7,18 @@ char buffer[LEN];
 
 int main(int argc, char **args)
 {
-  int a     = 5;
-  int b     = 7;
-  int bluat = 18;
-
-  int c = 5;
   if (argc != 2)
     {
       fprintf(stderr,
               "please pass a file name as an argument (it may not exist)\n");
       exit(1);
     }
-  unsigned int count;
-  FILE *handle = fopen(args[1], "r");
+  unsigned int count = 1; // we start on row one
+  FILE *handle       = fopen(args[1], "r");
   if (handle)
     {
       fgets(buffer, LEN, handle);
-      if (buffer[0] == 0)
-        count = 1; // we start on row one
-      else
+      if (buffer[0] != 0)
         {
           char *tmp = 0;
           count     = strtol(buffer, &tmp, 0);
@@ -34,8 +27,8 @@ int main(int argc, char **args)
               fprintf(stderr, "not a valid int. smh\n");
             }
         }
+      fclose(handle);
     }
-  fclose(handle);
   fopen(args[1], "w");
 
   printf("welcome. don't enter commands longer than %d in order to ensure "
