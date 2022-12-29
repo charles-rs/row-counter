@@ -1,3 +1,4 @@
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -5,16 +6,38 @@
 
 char buffer[LEN];
 
+unsigned int count = 1;
+FILE *handle       = 0;
+
+void stop()
+{
+  if (handle)
+    {
+      fprintf(handle, "%u\n", count);
+      fclose(handle);
+      handle = 0;
+    }
+}
+
+void sig_handler(int signo)
+{
+  if (signo == SIGINT)
+    {
+      stop();
+      exit(0);
+    }
+}
+
 int main(int argc, char **args)
 {
+  signal(SIGINT, sig_handler);
   if (argc != 2)
     {
       fprintf(stderr,
               "please pass a file name as an argument (it may not exist)\n");
       exit(1);
     }
-  unsigned int count = 1; // we start on row one
-  FILE *handle       = fopen(args[1], "r");
+  handle = fopen(args[1], "r");
   if (handle)
     {
       fgets(buffer, LEN, handle);
@@ -46,7 +69,6 @@ int main(int argc, char **args)
       else
         puts("please enter a valid command. (blank to increment rows)");
     }
-  fprintf(handle, "%u\n", count);
-  fclose(handle);
+  stop();
   return 0;
 }
