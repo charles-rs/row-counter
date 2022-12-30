@@ -52,7 +52,7 @@ int main(int argc, char **args)
         }
       fclose(handle);
     }
-  fopen(args[1], "w");
+  handle = fopen(args[1], "w");
 
   printf("welcome. don't enter commands longer than %d in order to ensure "
          "memory safety\n",
